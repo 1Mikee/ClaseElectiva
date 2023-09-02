@@ -1,0 +1,226 @@
+---
+title: "Activity"
+author: "Maicol Vargas"
+date: "2023-08-25"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Start
+
+In practice R language was used, detailing usage functions for each code.
+
+### Library used
+
+```{r message=FALSE}
+library(nycflights13) 
+library(tidyverse)
+```
+
+### Flight data loaded
+
+Flights set **flights_data**, using the package function **nycflights13**
+
+```{r}
+f_d <- nycflights13::flights
+```
+
+# Exercises
+### 5.2.4 Exercises: Items 1 and 2
+
+By solving this point 1, using the **filter()** function of tidyverse, the rows **flights_data** are selected and the value of the column **arr_delay** (arrival delay) is greater than or equal to 2. where it is stored in **filtered_de flights**.
+
+```{r}
+myDf1 <- filter(f_d, arr_delay >= 2)
+```
+
+The **Knitr* function is now used to mark the table with the aircraft tail number and delay time:
+
+```{r}
+library(knitr)
+kable(f_d[1:10,c(12,9)],caption = "ARRIVE DELAY", align = "c")
+```
+
+Solving item 2 of the exercise. We are using **filter()** to select rows where the value in the dest column equals "HOU". The result is stored in  **filtered_hou_flights**.
+
+```{r}
+myDf2 <- filter(f_d,dest =="HOU")
+```
+
+```{r}
+library(knitr)
+kable(myDf2[1:10,c(13,14)],caption = "HOUSTON DESTINY", align = "c")
+```
+
+### 5.3.1 Exercises: All Items
+
+```{r}
+sorted_flights_missing_first <- flights %>%
+  arrange(desc(is.na(dep_time)))
+```
+
+For this code, we perform the following:
+
+1.  We take flights from the dataset and cross them through the operator **% >%**, allowing for sequence operations.Then the function **arrange()** sorts the descending rows according to the column in **s. na(dep_time)**. This column is logical and returns TRUE if **dep_time** (output time) is absent and FALSE if it is not and those with missing values in **dep_time** appear first.
+
+```{r}
+library(knitr)
+kable(sorted_flights_missing_first[1:10,c(7,12)],caption = "MISSING DATA FIRST", align = "c")
+```
+
+```{r}
+most_delayed_flights <- flights %>%
+  arrange(desc(arr_delay))
+```
+
+2.  We take flights **dataset** and pass them through the operator ***% >%**. With **arrange()** to sort the rows according to the column **arr_delay**. which means that flights with longer delays come first.
+
+```{r}
+library(knitr)
+kable(most_delayed_flights[1:10,c(6,9,12)],caption = "MOST DELAYED FLIGHTS", align = "c")
+```
+
+```{r}
+fastest_flights_desc <- flights %>%
+  mutate(speed = distance / air_time) %>%
+  arrange(desc(speed))
+```
+
+3.  The data set **`flights`** is passed through the operator **`%>%`**. The function **`mutate()`** creates a new column **`speed`**. Calculating the speed by dividing the column **`distance`** * between the column **`air_time`**. To know its speed of each flight. Creating the column **`speed`**, and we use the function **`arrange()`** to sort the rows according to the column **`speed`**. Where flights with the highest speed are the first.
+
+```{r}
+library(knitr)
+kable(fastest_flights_desc[1:10,c(12,20)],caption = "FASTEST FLIGHTS", align = "c")
+```
+
+```{r}
+farthest_flights <- flights %>%
+  arrange(desc(distance))
+```
+
+4.  Data **`flights`** * is passed by **`%>%`**. and the **`arrange()`** function to sort the rows according to the **`distance`**. To see flights with long distances first.
+
+```{r}
+library(knitr)
+kable(farthest_flights[1:10,c(12,15)],caption = "FARTHEST FLIGHTS", align = "c")
+```
+
+```{r}
+closest_flights <- flights %>%
+  arrange(distance)
+```
+
+5.  Data **`flights`** is passed by **`%>%`** and so the **`arrange()`** function is used to sort rows according to the **`distance`**. Where flights with short distances are seen first.
+
+```{r}
+library(knitr)
+kable(closest_flights[1:10,c(12,15)],caption = "CLOSEST FLIGHTS", align = "c")
+```
+
+### 5.4.1 Exercises: Items 2, 3, and 4
+
+R's **`select()`** function, if you include the name of a variable multiple times, it will appear multiple times in the resulting output. For example:
+
+```{r message=FALSE}
+select(flights, dep_time, dep_time)
+```
+
+The column **`dep_time`** is included twice in the resulting output. Where the function **`any_of()`** selects columns from a dataframe of the column names. Used when a column name vector wants to select columns that are similar to any of the names in the vector.
+
+```{r message=FALSE}
+vars <- c("year", "month", "day", "dep_delay", "arr_delay")
+select(flights, any_of(vars))
+```
+```{r message=FALSE}
+select(flights, contains("TIME"))
+```
+
+The code selects the names containing the string "TIME," such as "dep_time" and "arr_time."
+
+### 5.5.2 Exercises: Items 1 and 2
+
+```{r message=FALSE}
+flights_modified <- flights %>%
+  mutate(
+    dep_time_mins = (dep_time %/% 100) * 60 + dep_time %% 100,
+    sched_dep_time_mins = (sched_dep_time %/% 100) * 60 + sched_dep_time %% 100)
+```
+
+In this code:
+
+We take the data **`flights`** * and pass it through  **`%>%`**. using **`mutate()`** by adding new columns to the data. Creating two new columns: **`dep_time_mins`** and **`sched_dep_time_mins`**.
+
+Each column is performing calculations to convert the values (stored in HHMM format) in minutes from midnight. It uses **`%/%`** to get the hours and **`%`** to get the minutes.
+
+The code is executed and then the dataset **`flights_modified`** will have the original columns together with the new columns **`dep_time_mins`** and **`sched_dep_time_mins`**, representing departure hours (programmed and real) in minutes from midnight.
+
+```{r}
+library(knitr)
+kable(flights_modified[1:10,c(12,4,5,20,21)],caption = "SCHEDULED DEPARTURE TIME", align = "c")
+```
+
+```{r message=FALSE}
+comparison_result <- flights_modified %>%
+  mutate(arr_dep_time_diff = arr_time - dep_time_mins) %>%
+  filter(!is.na(air_time) & !is.na(arr_dep_time_diff)) %>%
+  select(air_time, arr_dep_time_diff)
+```
+
+In this second code:
+
+We take the data **`flights_modified`** (the above result) and pass it through **`%>%`**. the function **`mutate()`** is used by creating a new column called **`arr_dep_time_diff`**. Calculating the difference between arrival time **`arr_time`** and departure time in minutes from midnight **`dep_time_mins`**. Then **`filter()`** is used by removing rows where values are missing in the columns **`air_time`** or **`arr_dep_time_diff`**. and finally, use **`select()`** * to choose the columns **`air_time`** and **`arr_dep_time_diff`**.
+
+```{r}
+library(knitr)
+kable(comparison_result[1:10,c(1,2)],caption = "COMPARISION OF ARRIVES AND DEPARTURES", align = "c")
+```
+
+### 5.6.7 Exercises: item 1
+
+1.  Calculate the average arrival delay for the flight group. It provides a central value that represents the typical delay experienced upon arrival.
+
+2.  Percentage of flights arriving 15 minutes earlier or 15 minutes late, 30 minutes earlier or 30 minutes late or 2 hours late. Helping to understand the distribution of delay scenarios within the group.
+
+3.  Calculated departure mean delay for the flight group. Giving an idea of the average flight delay before take-off.
+
+4.  Calculate the percentage of flights that are punctual and compare it with the percentage of flights that are extremely delayed. This helps an understanding of how often flights are on time against delays.
+
+5.  Create a chart showing the distribution of arrival delays on all flights. Visual representation helps identify common delay ranges and abnormal values.
+
+**Question: What's More Important - Arrival Delay or Departure Delay?**
+
+He wondered whether delays in arrival or departure of flights had a greater impact on the travel experience. This depends on several factors, as delays in arrival affect passenger schedules and connections, while delays in departure can cause scheduling issues. Both are important, but their importance varies according to passengers' priorities and plans.
+
+### 5.7.1 Exercises: item 2
+
+```{r echo=FALSE}
+worst_punctuality <- flights %>%
+  group_by(tailnum) %>%
+  summarize(
+    total_flights = n(),
+    punctual_flights = sum(arr_delay <= 0, na.rm = TRUE),
+    punctuality_percentage = (punctual_flights / total_flights) * 100
+  ) %>%
+  arrange(punctuality_percentage) %>%
+  filter(!is.na(punctuality_percentage))
+
+worst_punctuality
+```
+
+In this code:
+
+We start with **`flights`** and use the operator **`%>%`** to chain operations. then we collect the data by aircraft tail number **`tailnum`**. So the calculations will be done separately for each aircraft.
+
+The **`summary()`** function for calculating statistics for each group (aircraft). Within the **`summary()`**:
+
+After **`summary()`**, use **`arrange()`** to sort groups (aircraft) based on the punctuality percentages in ascending order. Where planes with the lowest punctuality percentages will appear first. Then **`filter()`** is used to remove rows where **`punctuality_percentage`** (**`NA`**) is not available. Where the resulting data set is assigned to **`worst_punctuality`**, containing the tail numbers of aircraft, the total number of flights, the number of punctual flights and the corresponding punctuality percentages.
+
+Finally, the data set **`worst_punctuality`** is displayed to see aircraft tail numbers with the lowest punctuality percentages.
+
+```{r}
+library(knitr)
+kable(worst_punctuality[1:10,c(1,2,3,4)],caption = "WORST PUNCTUALITY TOP", align = "c")
+```
